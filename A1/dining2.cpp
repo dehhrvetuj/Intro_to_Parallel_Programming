@@ -4,7 +4,7 @@
 
 std::mutex out;
 
-void philosopher(int n, std::mutex *left, std::mutex *right)
+void philosopher(int n, std::mutex *first, std::mutex *second)
 {
   while (true)
     {
@@ -12,14 +12,14 @@ void philosopher(int n, std::mutex *left, std::mutex *right)
       std::cout << "Philosopher " << n << " is thinking." << std::endl;
       out.unlock();
 
-      left->lock();
+      first->lock();
       out.lock();
-      std::cout << "Philosopher " << n << " picked up one fork." << std::endl;
+      std::cout << "Philosopher " << n << " picked up first fork." << std::endl;
       out.unlock();
 
-      right->lock();
+      second->lock();
       out.lock();
-      std::cout << "Philosopher " << n << " picked up another fork." << std::endl;
+      std::cout << "Philosopher " << n << " picked up second fork." << std::endl;
       out.unlock();
 
       out.lock();
@@ -27,14 +27,14 @@ void philosopher(int n, std::mutex *left, std::mutex *right)
       out.unlock();
 
       out.lock();
-      std::cout << "Philosopher " << n << " is putting down her one fork." << std::endl;
+      std::cout << "Philosopher " << n << " is putting down first fork." << std::endl;
       out.unlock();
-      right->unlock();
+      second->unlock();
 
       out.lock();
-      std::cout << "Philosopher " << n << " is putting down another fork." << std::endl;
+      std::cout << "Philosopher " << n << " is putting down second fork." << std::endl;
       out.unlock();
-      left->unlock();
+      first->unlock();
     }
 }
 
@@ -75,10 +75,10 @@ int main(int argc, char *argv[])
     {
       int left = i;
       int right = (i == 0 ? philosophers : i) - 1;
-      int smaller = left < right ? left : right;
-      int larger = left > right ? left : right;
+      int first = left < right ? left : right;
+      int second = left > right ? left : right;
       
-      ph[i] = std::thread(philosopher, i, &forks[smaller], &forks[larger]);
+      ph[i] = std::thread(philosopher, i, &forks[first], &forks[second]);
     }
 
   ph[0].join();
