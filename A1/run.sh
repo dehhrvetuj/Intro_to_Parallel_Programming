@@ -28,7 +28,7 @@ for N in "${N_VALUES[@]}"; do
         # 执行程序，捕获输出
         # 提示：如果程序输出格式为 "Time: X seconds"，可通过 awk/grep 提取纯数字
         # 这里假设 ./performance N T 的输出中直接包含了运行时间
-        EXEC_OUTPUT=$(./performance "$N" "$T")
+        EXEC_OUTPUT=$(./performance "$T" "$N")
         
         # 提取输出中的浮点数/数字时间（根据你程序实际输出的字符串格式调微）
         TIME_TAKEN=$(echo "$EXEC_OUTPUT" | grep -oE '[0-9]+(\.[0-9]+)?' | tail -n 1)
