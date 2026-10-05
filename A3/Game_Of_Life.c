@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <omp.h>
 
 #define FINALIZE "\
 ffmpeg -y -start_number 0 -i out%d.pgm output.gif\n\
@@ -74,7 +75,7 @@ int main (int argc, char * argv[]) {
 	int T; 				//time steps
 	int ** current, ** previous; 	//arrays - one for current timestep, one for previous timestep
 	int ** swap;			//array pointer
-	int t, i, j, nbrs;		//helper variables
+	int t, nbrs;		//helper variables
 
 	double time;			//variables for timing
 	struct timeval ts,tf;
@@ -102,27 +103,32 @@ int main (int argc, char * argv[]) {
 	/*Game of Life*/
 
 	gettimeofday(&ts,NULL);
-	for (t = 0 ; t < T ; t++) {
-		for (i = 1 ; i < N-1 ; i++)
-			for (j = 1 ; j < N-1 ; j++) {
-				nbrs = previous[i+1][j+1] + previous[i+1][j] + previous[i+1][j-1] \
-					+ previous[i][j-1] + previous[i][j+1] \
-					+ previous[i-1][j-1] + previous[i-1][j] + previous[i-1][j+1];
-				if (nbrs == 3 || ( previous[i][j]+nbrs == 3))
-					current[i][j] = 1;
-				else 
-					current[i][j] = 0;
-			}
-	
-		#ifdef OUTPUT
-		print_to_pgm(current, N, t+1);
-		#endif
-		//Swap current array with previous array 
-		swap = current;
-		current = previous;
-		previous = swap;
+ 
+    for (t = 0 ; t < T ; t++) {
+        #pragma omp parallel for 
+        for (int i = 1 ; i < N-1 ; i++)
+            for (int j = 1 ; j < N-1 ; j++) {
+                nbrs = previous[i+1][j+1] + previous[i+1][j] + previous[i+1][j-1] \
+                    + previous[i][j-1] + previous[i][j+1] \
+                    + previous[i-1][j-1] + previous[i-1][j] + previous[i-1][j+1];
+                if (nbrs == 3 || ( previous[i][j]+nbrs == 3))
+                    current[i][j] = 1;
+                else 
+                    current[i][j] = 0;
+            }
 
-	}
+        
+        #ifdef OUTPUT
+        print_to_pgm(current, N, t+1);
+        #endif
+        //Swap current array with previous array 
+        swap = current;
+        current = previous;
+        previous = swap;
+        
+
+    }
+
 	gettimeofday(&tf,NULL);
 	time = (tf.tv_sec-ts.tv_sec)+(tf.tv_usec-ts.tv_usec)*0.000001;
 
