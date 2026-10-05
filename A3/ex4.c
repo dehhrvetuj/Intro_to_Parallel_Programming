@@ -4,19 +4,19 @@
 #include <omp.h>
 
 /* Allocate an n x n matrix */
-double **allocate_matrix(int n)
+int **allocate_matrix(int n)
 {
-    double **A = malloc(n * sizeof(double *));
+    int **A = malloc(n * sizeof(int *));
 
     for (int i = 0; i < n; i++)
-        A[i] = malloc(n * sizeof(double));
+        A[i] = malloc(n * sizeof(int));
 
     return A;
 }
 
 
 /* Free matrix */
-void free_matrix(double **A, int n)
+void free_matrix(int **A, int n)
 {
     for (int i = 0; i < n; i++)
         free(A[i]);
@@ -26,7 +26,7 @@ void free_matrix(double **A, int n)
 
 
 /* Initialize an upper triangular system */
-void initialize(double **A, double *b, int n)
+void initialize(int **A, double *b, int n)
 {
     /*
      * We choose the exact solution:
@@ -43,13 +43,13 @@ void initialize(double **A, double *b, int n)
         for (int j = 0; j < n; j++) {
 
             if (j < i)
-                A[i][j] = 0.0;
+                A[i][j] = 0;
 
             else if (j == i)
                 A[i][j] = 2.0;
 
             else
-                A[i][j] = 0.000001;
+                A[i][j] = 1;
 
             b[i] += A[i][j];
         }
@@ -57,8 +57,8 @@ void initialize(double **A, double *b, int n)
 }
 
 
-/* Row-oriented backward substitution */
-void row_oriented(double **A, double *b, double *x, int n)
+/* Row-oriented */
+void row_oriented(int **A, double *b, double *x, int n)
 {
     for (int row = n - 1; row >= 0; row--) {
 
@@ -75,8 +75,8 @@ void row_oriented(double **A, double *b, double *x, int n)
 }
 
 
-/* Column-oriented backward substitution */
-void column_oriented(double **A, double *b, double *x, int n)
+/* Column-oriented */
+void column_oriented(int **A, double *b, double *x, int n)
 {
     /* x initially contains b */
     for (int row = 0; row < n; row++)
@@ -95,26 +95,6 @@ void column_oriented(double **A, double *b, double *x, int n)
 }
 
 
-/* Check the result */
-void check_result(double *x, int n)
-{
-    double max_error = 0.0;
-
-    for (int i = 0; i < n; i++) {
-
-        double error = x[i] - 1.0;
-
-        if (error < 0)
-            error = -error;
-
-        if (error > max_error)
-            max_error = error;
-    }
-
-    printf("Maximum error: %e\n", max_error);
-}
-
-
 int main(int argc, char *argv[])
 {
     if (argc != 3) {
@@ -129,7 +109,7 @@ int main(int argc, char *argv[])
 
     int n = atoi(argv[1]);
 
-    double **A = allocate_matrix(n);
+    int **A = allocate_matrix(n);
     double *b = malloc(n * sizeof(double));
     double *x = malloc(n * sizeof(double));
 
@@ -166,8 +146,6 @@ int main(int argc, char *argv[])
     printf("N: %d\n", n);
     printf("Threads: %d\n", omp_get_max_threads());
     printf("Time: %lf seconds\n", end - start);
-
-    check_result(x, n);
 
 
     free_matrix(A, n);
