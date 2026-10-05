@@ -46,7 +46,7 @@ void initialize(int **A, double *b, int n)
                 A[i][j] = 0;
 
             else if (j == i)
-                A[i][j] = 2.0;
+                A[i][j] = 2;
 
             else
                 A[i][j] = 1;
@@ -79,6 +79,7 @@ void row_oriented(int **A, double *b, double *x, int n)
 void column_oriented(int **A, double *b, double *x, int n)
 {
     /* x initially contains b */
+    #pragma omp parallel for
     for (int row = 0; row < n; row++)
         x[row] = b[row];
 
