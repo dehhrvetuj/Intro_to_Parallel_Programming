@@ -94,22 +94,6 @@ int main(int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
 	
-	/*
-    if (rank == 0) {
-      printf("Hello from process %d of %d\n", rank, size);
-      for (p = 1; p < size; p++) {
-	MPI_Recv(msg, MAX_MSG_SIZE, MPI_CHAR, p, 0, MPI_COMM_WORLD,
-		 MPI_STATUS_IGNORE);
-	printf("%s\n", msg);
-      }
-    } else {
-      MPI_Get_processor_name(name, &len);
-      sprintf(msg, "Message from process %d at %s", rank, name);
-      MPI_Send(msg, strlen(msg)+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
-    }
-	*/
-
-	
 	mysum = do_work(rank, size, number_of_trapezoids, width);
 	
 	MPI_Reduce(&mysum, &sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
