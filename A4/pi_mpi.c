@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <mpi.h>
 
 #define MAX_NAME_SIZE 42
@@ -110,8 +111,8 @@ int main(int argc, char *argv[])
 	MPI_Reduce(&mysum, &sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	
 	if (rank == 0) {
-      printf("The integration result is %f\n", sum);
-	｝
+      printf("The integration result is %.12f\n", sum);
+	}
 
 	
     MPI_Finalize();
