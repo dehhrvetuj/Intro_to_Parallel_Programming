@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 	
 	if (rank == 0) 
 	{
-		result =  = malloc(sizeof(int) * (max + 1));
+		result = malloc(sizeof(int) * (max + 1));
 		
 		if (result == NULL) 
 		{
