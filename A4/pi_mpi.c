@@ -62,6 +62,12 @@ int main(int argc, char *argv[])
     /*
      * Read command-line arguments.
      */
+	if (argc <= 1 ) {
+		fprintf(stderr, "Invalid or incomplete argument: %s\n", argv[i]);
+        print_help(argv[0]);
+		return 1;
+	}
+	
     for (int i = 1; i < argc; i++)
     {
         if (strcmp(argv[i], "-h") == 0)
@@ -77,12 +83,15 @@ int main(int argc, char *argv[])
         else
         {
             fprintf(stderr, "Invalid or incomplete argument: %s\n", argv[i]);
-
             print_help(argv[0]);
-
             return 1;
         }
     }
+
+	if (number_of_trapezoids <= 0) {
+		fprintf(stderr, "Invalid number of trapezoids.\n");
+		return 1;
+	}
 
 
     char msg[MAX_MSG_SIZE], name[MAX_NAME_SIZE];
