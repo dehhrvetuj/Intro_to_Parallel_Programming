@@ -37,11 +37,11 @@ double integrate(long long start, long long end, double width)
 
 double do_work(int rank, int size, long long number_of_trapezoids, double width)
 {
-	long long start = number_of_trapezoids * rank / size;
-	  
+        long long start = number_of_trapezoids * rank / size;
+
     long long end = number_of_trapezoids * (rank + 1) / size;
-	
-	return integrate(start, end, width);
+
+        return integrate(start, end, width);
 }
 
 void print_help(const char *program_name)
@@ -56,18 +56,19 @@ void print_help(const char *program_name)
 int main(int argc, char *argv[])
 {
     long long number_of_trapezoids = 0;
-	double width = 0.0;
-	double sum = 0.0, mysum = 0.0;
+    double width = 0.0;
+    double sum = 0.0, mysum = 0.0;
 
     /*
      * Read command-line arguments.
      */
-	if (argc <= 1 ) {
-		fprintf(stderr, "Invalid or incomplete argument: %s\n", argv[i]);
+
+    if (argc <= 1 ) {
+        fprintf(stderr, "Invalid or incomplete argument\n");
         print_help(argv[0]);
-		return 1;
-	}
-	
+        return 1;
+    }
+
     for (int i = 1; i < argc; i++)
     {
         if (strcmp(argv[i], "-h") == 0)
@@ -78,7 +79,7 @@ int main(int argc, char *argv[])
         else if (strcmp(argv[i], "-n") == 0 && i + 1 < argc)
         {
             number_of_trapezoids = atoll(argv[++i]);
-			width = 1.0 / (double)number_of_trapezoids;
+                        width = 1.0 / (double)number_of_trapezoids;
         }
         else
         {
@@ -88,10 +89,10 @@ int main(int argc, char *argv[])
         }
     }
 
-	if (number_of_trapezoids <= 0) {
-		fprintf(stderr, "Invalid number of trapezoids.\n");
-		return 1;
-	}
+    if (number_of_trapezoids <= 0) {
+         fprintf(stderr, "Invalid number of trapezoids.\n");
+         return 1;
+    }
 
 
     char msg[MAX_MSG_SIZE], name[MAX_NAME_SIZE];
@@ -102,19 +103,18 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-	
-	mysum = do_work(rank, size, number_of_trapezoids, width);
-	
-	MPI_Reduce(&mysum, &sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-	
-	if (rank == 0) {
-      printf("The integration result is %.12f\n", sum);
-	}
+    mysum = do_work(rank, size, number_of_trapezoids, width);
 
-	
+    MPI_Reduce(&mysum, &sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    if (rank == 0) {
+        printf("The integration result is %.12f\n", sum);
+    }
+
+
     MPI_Finalize();
-	
-	
+
+
     /* no MPI calls after this point */
     return 0;
 }
