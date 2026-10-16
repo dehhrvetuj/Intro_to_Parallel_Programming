@@ -105,12 +105,13 @@ int main(int argc, char *argv[])
       MPI_Send(msg, strlen(msg)+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
     }
 	
-	mysum = do_work(rank, size, width);
+	mysum = do_work(rank, size, number_of_trapezoids，width);
 	
-	MPI_Reduce(&mysum, sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_Comm comm);
+	MPI_Reduce(&mysum, sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	
 	if (rank == 0) {
       printf("The integration result is %f\n", sum);
+	｝
 
 	
     MPI_Finalize();
