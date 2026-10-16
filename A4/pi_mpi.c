@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
       MPI_Send(msg, strlen(msg)+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
     }
 	
-	mysum = do_work(rank, size, umber_of_trapezoids, double width);
+	mysum = do_work(rank, size, number_of_trapezoids, width);
 	
 	MPI_Reduce(&mysum, &sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	
