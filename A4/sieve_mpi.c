@@ -126,13 +126,13 @@ int main(int argc, char *argv[])
 
     if (rank == 0) 
 	{
-        fprintf(stderr, "Elapsed time: %.6f seconds\n", t_end - t_start);
-
         for (uint64_t i = 2; i <= max; i++) 
 		{
             if (list[i])
                 printf("%" PRIu64 "\n", i);
         }
+
+		fprintf(stderr, "Elapsed time: %.6f seconds\n", t_end - t_start);
     }
 
     free(list);
